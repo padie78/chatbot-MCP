@@ -1,0 +1,41 @@
+services:
+  graphql-api:
+    build: ./graphql-api
+    container_name: graphql-api
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=production
+    networks:
+      - mcp-network
+
+  mcp-server:
+    build: ./mcp-server
+    container_name: mcp-server
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - GRAPHQL_API_URL=http://graphql-api:4000/graphql
+    depends_on:
+      - graphql-api
+    networks:
+      - mcp-network
+
+  chatbot-api:
+    build: ./chatbot-api
+    container_name: chatbot-api
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - MCP_SERVER_URL=http://localhost:5000/invokeTool
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    depends_on:
+      - mcp-server
+    networks:
+      - mcp-network
+
+networks:
+  mcp-network:
+    driver: bridge
