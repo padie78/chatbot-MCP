@@ -33,3 +33,5 @@ yarn.lock
 
 # Others
 coverage/
+
+.env
