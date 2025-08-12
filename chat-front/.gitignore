@@ -1,0 +1,49 @@
+# Node modules
+/node_modules/
+
+# Angular build output
+/dist/
+/out-tsc/
+
+# IDE files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Environment files (pueden contener secretos)
+src/environments/*.ts
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Temporary files
+*.tmp
+*.temp
+
+# Compiled JavaScript and source maps (si usas Angular CLI no suele ser necesario ignorar)
+*.js
+*.js.map
+
+# Angular cache
+.angular/cache
+
+# Coverage reports
+coverage/
+
+# Mac OS files
+.AppleDouble
+.LSOverride
+
+# dotenv environment files
+.env
+.env.local
+.env.*.local

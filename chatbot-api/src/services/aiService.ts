@@ -1,4 +1,14 @@
-import fetch from "node-fetch";
+import OpenAI from "openai";
+import 'dotenv/config';
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+  baseURL: 'https://openrouter.ai/api/v1', // URL OpenRouter
+  defaultHeaders: {
+    'HTTP-Referer': 'http://localhost:3000', // Cambia por tu dominio real si aplica
+    'X-Title': 'contract-app',
+  },
+});
 
 /**
  * Analiza el mensaje del usuario y decide si debe usar una herramienta.
@@ -21,18 +31,14 @@ Si es necesario, responde SOLO con un JSON válido, ejemplo:
 `;
 
   try {
-    const res = await fetch("http://localhost:11434/api/generate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "llama3:latest",
-        prompt,
-        stream: false
-      })
+    const completion = await openai.chat.completions.create({
+      model: "anthropic/claude-sonnet-4",
+      messages: [{ role: "user", content: prompt }],
+      temperature: 0,
+      max_tokens: 150,
     });
 
-    const data = await res.json() as { response: string };
-    const text = data.response.trim();
+    const text = completion.choices[0]?.message?.content?.trim() || "";
 
     try {
       const jsonResponse = JSON.parse(text);
@@ -40,13 +46,13 @@ Si es necesario, responde SOLO con un JSON válido, ejemplo:
         return { tool: "none" };
       }
       return jsonResponse;
-    } catch {
-      // No pudo parsear, asumimos que no hay tool
+    } catch (parseError) {
+      console.warn("No se pudo parsear respuesta JSON, se asume tool none:", text);
       return { tool: "none" };
     }
 
   } catch (error) {
-    console.error("Error usando modelo local:", error);
+    console.error("Error usando OpenRouter:", error);
     return { tool: "none" };
   }
 }
