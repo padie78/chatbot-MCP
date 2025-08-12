@@ -1,4 +1,5 @@
-import { startWebSocketServer } from "./routes/chatbot";
+import { startWebSocketServer } from './server';
 
-const PORT_WS = 3000; // Puerto para WebSocket
-startWebSocketServer(PORT_WS);
+const PORT = process.env.PORT ? Number(process.env.PORT) : 3000;
+
+startWebSocketServer(PORT);
